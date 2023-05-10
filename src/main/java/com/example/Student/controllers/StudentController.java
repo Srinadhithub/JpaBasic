@@ -1,5 +1,7 @@
 package com.example.Student.controllers;
 
+import com.example.Student.model.Department;
+import com.example.Student.model.LibraryCard;
 import com.example.Student.model.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +13,13 @@ public class StudentController {
     @Autowired
     Repo repository;
     @PostMapping("/add")
-    public String addStuent(@RequestBody Student student){
+    public String addStuent(@RequestBody Student student,@RequestParam Department department){
+        LibraryCard card = new LibraryCard(); //creating
+        card.setDepartment(department);
+        card.setStudent(student); //setting stude fild
+
+        student.setLibraryCard(card);//setting card fild
+        //we have relation btwn card and stu so library also aded (cascade)
         repository.save(student);
         return "Sucess";
     }
@@ -41,6 +49,10 @@ public class StudentController {
       student.setName(name);
       repository.save(student);
       return "updtated";
+    }
+    @GetMapping("/getage/{age}")
+    public List<Student> getAge(@PathVariable int age ){
+        return repository.findByAge(age);
     }
 
 }
